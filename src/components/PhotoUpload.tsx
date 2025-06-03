@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useServices } from '../servicesContext';
+import logo from '../assets/logo.png';
 
 const PhotoUpload: React.FC = () => {
   const { photoService } = useServices();
@@ -34,6 +35,12 @@ const PhotoUpload: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-pink-50 to-blue-50 p-8">
       <div className="text-center space-y-6 max-w-md">
+        <img 
+          src={logo} 
+          alt="Logo" 
+          className="w-36 h-36 rounded-full mx-auto mb-12 shadow-lg object-cover"
+        />
+        
         <h1 className="text-4xl md:text-5xl font-serif text-gray-800 mb-2">
           Gabri & Ale
         </h1>
