@@ -1,2 +1,0 @@
-name = "wedding-photo-frontend" # IMPORTANTE: Deve corrispondere al nome del tuo progetto su Cloudflare Pages
-pages_build_output_dir = "./dist"
