@@ -198,7 +198,7 @@ const Gallery: React.FC = () => {
 
               {/* Photo */}
               <img
-                src={photos[selectedPhotoIndex].image_url}
+                src={photos[selectedPhotoIndex].preview_url}
                 alt={photos[selectedPhotoIndex].image_name}
                 className="max-w-full max-h-full object-contain"
                 onClick={(e) => e.stopPropagation()}
