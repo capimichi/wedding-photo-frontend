@@ -106,7 +106,7 @@ const Gallery: React.FC = () => {
         </div>
 
         <p className="text-lg text-gray-600 text-center mb-8">
-          Tutte le foto condivise per Gabri & Ale
+          Tutte le foto condivise per Ale & Gabri
         </p>
 
         {loading && (
