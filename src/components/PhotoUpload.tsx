@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useServices } from '../servicesContext';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import logo from '../assets/logo.png';
 
 const PhotoUpload: React.FC = () => {
@@ -64,9 +66,10 @@ const PhotoUpload: React.FC = () => {
               type="button" 
               disabled={uploading}
               onClick={() => document.getElementById('photo-input')?.click()}
-              className="bg-gradient-to-r from-pink-400 to-purple-500 hover:from-pink-500 hover:to-purple-600 disabled:from-gray-300 disabled:to-gray-400 text-white font-semibold py-4 px-8 rounded-full text-lg shadow-lg hover:shadow-xl transition-all duration-300 disabled:cursor-not-allowed cursor-pointer"
+              className="bg-gradient-to-r from-pink-400 to-purple-500 hover:from-pink-500 hover:to-purple-600 disabled:from-gray-300 disabled:to-gray-400 text-white font-semibold py-4 px-8 rounded-full text-lg shadow-lg hover:shadow-xl transition-all duration-300 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2"
             >
-              {uploading ? 'Caricamento...' : '📷 Carica'}
+              <FontAwesomeIcon icon={faCamera} />
+              {uploading ? 'Caricamento...' : 'Carica'}
             </button>
           </label>
           
