@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useServices } from '@/servicesContext';
 import type Photo from '@/types/Photo';
@@ -8,52 +8,60 @@ const Gallery: React.FC = () => {
   const { photoService } = useServices();
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isComplete, setIsComplete] = useState(false);
 
-  useEffect(() => {
-    const fetchPhotos = async () => {
-      try {
+  const fetchPhotos = useCallback(async (page: number, append: boolean = false) => {
+    try {
+      if (page === 1) {
         setLoading(true);
-        const fetchedPhotos = await photoService.getPhotos();
-        setPhotos(fetchedPhotos);
-      } catch (err) {
-        setError('Errore durante il caricamento delle foto');
-        console.error('Error fetching photos:', err);
-      } finally {
-        setLoading(false);
+      } else {
+        setLoadingMore(true);
       }
-    };
-
-    fetchPhotos();
+      
+      const response = await photoService.getPhotos(page, 10);
+      
+      if (append) {
+        setPhotos(prev => [...prev, ...response.photos]);
+      } else {
+        setPhotos(response.photos);
+      }
+      
+      setCurrentPage(response.page);
+      setTotalPages(response.total_pages);
+      setIsComplete(response.page >= response.total_pages);
+    } catch (err) {
+      setError('Errore durante il caricamento delle foto');
+      console.error('Error fetching photos:', err);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
   }, [photoService]);
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (selectedPhotoIndex === null) return;
+    fetchPhotos(1);
+  }, [fetchPhotos]);
 
-      switch (event.key) {
-        case 'Escape':
-          setSelectedPhotoIndex(null);
-          break;
-        case 'ArrowLeft':
-          event.preventDefault();
-          setSelectedPhotoIndex(prev => 
-            prev !== null ? (prev > 0 ? prev - 1 : photos.length - 1) : null
-          );
-          break;
-        case 'ArrowRight':
-          event.preventDefault();
-          setSelectedPhotoIndex(prev => 
-            prev !== null ? (prev < photos.length - 1 ? prev + 1 : 0) : null
-          );
-          break;
-      }
-    };
+  const handleScroll = useCallback(() => {
+    if (loadingMore || isComplete) return;
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [selectedPhotoIndex, photos.length]);
+    const scrollPosition = window.innerHeight + window.scrollY;
+    const threshold = document.documentElement.offsetHeight - 1000;
+
+    if (scrollPosition >= threshold && currentPage < totalPages) {
+      fetchPhotos(currentPage + 1, true);
+    }
+  }, [loadingMore, isComplete, currentPage, totalPages, fetchPhotos]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
 
   const handleGoBack = () => {
     navigate(-1);
@@ -120,21 +128,35 @@ const Gallery: React.FC = () => {
         )}
 
         {!loading && !error && photos.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {photos.map((photo, index) => (
-              <div 
-                key={index} 
-                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-                onClick={() => openLightbox(index)}
-              >
-                <img
-                  src={photo.image_url}
-                  alt={photo.image_name}
-                  className="w-full h-64 object-cover"
-                />
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {photos.map((photo, index) => (
+                <div 
+                  key={index} 
+                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                  onClick={() => openLightbox(index)}
+                >
+                  <img
+                    src={photo.image_url}
+                    alt={photo.image_name}
+                    className="w-full h-64 object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {loadingMore && (
+              <div className="flex justify-center items-center py-8">
+                <div className="text-gray-500">Caricamento altre foto...</div>
               </div>
-            ))}
-          </div>
+            )}
+
+            {isComplete && (
+              <div className="flex justify-center items-center py-8">
+                <div className="text-gray-600 font-medium">Galleria completata</div>
+              </div>
+            )}
+          </>
         )}
 
         {/* Lightbox */}

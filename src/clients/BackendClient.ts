@@ -28,8 +28,8 @@ export default class BackendClient {
     return response.json();
   }
 
-  async getPhotos(): Promise<GetPhotosResponse> {
-    const response = await fetch(`${this.backendUrl}/api/photos`, {
+  async getPhotos(page: number = 1, perPage: number = 10): Promise<GetPhotosResponse> {
+    const response = await fetch(`${this.backendUrl}/api/photos?page=${page}&per_page=${perPage}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
