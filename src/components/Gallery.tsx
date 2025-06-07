@@ -141,7 +141,7 @@ const Gallery: React.FC = () => {
                     alt={photo.image_name}
                     className="w-full h-64 object-cover"
                     onError={(e) => {
-                      e.currentTarget.src = 'https://placehold.co/400x400?text=Immagine+non+disponibile';
+                      e.currentTarget.src = 'https://placehold.co/400x400?text=Anteprima+non+disponibile';
                     }}
                   />
                 </div>
