@@ -43,7 +43,7 @@ const PhotoUpload: React.FC = () => {
         />
         
         <h1 className="text-4xl md:text-5xl font-serif text-gray-800 mb-2">
-          Gabri & Ale
+          Ale & Gabri
         </h1>
         
         <p className="text-lg text-gray-600 mb-8">
