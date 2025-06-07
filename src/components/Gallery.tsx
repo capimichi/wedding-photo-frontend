@@ -137,7 +137,7 @@ const Gallery: React.FC = () => {
                   onClick={() => openLightbox(index)}
                 >
                   <img
-                    src={photo.image_url}
+                    src={photo.thumbnail_url}
                     alt={photo.image_name}
                     className="w-full h-64 object-cover"
                   />
