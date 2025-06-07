@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useServices } from '../servicesContext';
+import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
 const PhotoUpload: React.FC = () => {
@@ -49,7 +50,7 @@ const PhotoUpload: React.FC = () => {
           Carica la tua foto per gli sposi
         </p>
         
-        <div className="upload-section">
+        <div className="upload-section flex items-center justify-center gap-4">
           <input
             type="file"
             accept="image/*"
@@ -68,6 +69,13 @@ const PhotoUpload: React.FC = () => {
               {uploading ? 'Caricamento...' : 'Carica'}
             </button>
           </label>
+          
+          <Link 
+            to="/gallery" 
+            className="text-lg font-semibold text-gray-600 hover:text-gray-800 transition-colors duration-300"
+          >
+            Gallery
+          </Link>
         </div>
 
         {message && (

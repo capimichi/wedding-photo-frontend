@@ -1,15 +1,15 @@
 import './App.css'
 import { ServicesProvider } from './servicesContext'
-import PhotoUpload from './components/PhotoUpload'
+import { RouterProvider } from 'react-router-dom'
+import { router } from './router'
 
 
 function App() {
-
   return (
     <>
       <ServicesProvider>
         <div className="app">
-          <PhotoUpload />
+          <RouterProvider router={router} />
         </div>
       </ServicesProvider>
     </>
