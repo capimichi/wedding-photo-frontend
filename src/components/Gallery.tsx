@@ -82,20 +82,19 @@ const Gallery: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-pink-50 to-blue-50 p-8">
       <div className="w-full max-w-6xl">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col items-center mb-8">
           <button
             onClick={handleGoBack}
-            className="flex items-center px-4 py-2 text-gray-600 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+            className="flex items-center px-4 py-2 text-gray-600 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors mb-4 self-start"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Indietro
           </button>
-          <h1 className="text-4xl md:text-5xl font-serif text-gray-800">
+          <h1 className="text-4xl md:text-5xl font-serif text-gray-800 text-center">
             Galleria Foto
           </h1>
-          <div className="w-24"></div>
         </div>
 
         <p className="text-lg text-gray-600 text-center mb-8">
