@@ -64,7 +64,7 @@ const Gallery: React.FC = () => {
   }, [handleScroll]);
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate('/');
   };
 
   const openLightbox = (index: number) => {
