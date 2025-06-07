@@ -66,7 +66,7 @@ const PhotoUpload: React.FC = () => {
               onClick={() => document.getElementById('photo-input')?.click()}
               className="bg-gradient-to-r from-pink-400 to-purple-500 hover:from-pink-500 hover:to-purple-600 disabled:from-gray-300 disabled:to-gray-400 text-white font-semibold py-4 px-8 rounded-full text-lg shadow-lg hover:shadow-xl transition-all duration-300 disabled:cursor-not-allowed cursor-pointer"
             >
-              {uploading ? 'Caricamento...' : 'Carica'}
+              {uploading ? 'Caricamento...' : '📷 Carica'}
             </button>
           </label>
           
