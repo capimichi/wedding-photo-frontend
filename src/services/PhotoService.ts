@@ -1,7 +1,6 @@
 import BackendClient from '@/clients/BackendClient';
 import type AddPhotoRequest from '@/types/AddPhotoRequest';
 import type AddPhotoResponse from '@/types/AddPhotoResponse';
-import type GetPhotosResponse from '@/types/GetPhotosResponse';
 import type Photo from '@/types/Photo';
 import { fileToBase64 } from '@/utils/fileUtils';
 
