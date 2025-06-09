@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useServices } from '../servicesContext';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCamera } from '@fortawesome/free-solid-svg-icons';
+import { faCamera, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import logo from '../assets/logo.png';
 
 const PhotoUpload: React.FC = () => {
   const { photoService } = useServices();
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<string>('');
+  const [progress, setProgress] = useState(0);
+  const [showProgress, setShowProgress] = useState(false);
+  const progressIntervalRef = useRef<number | null>(null);
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -22,13 +25,36 @@ const PhotoUpload: React.FC = () => {
 
     setUploading(true);
     setMessage('');
+    setProgress(0);
+    setShowProgress(true);
+
+    // Avvia la progress bar fake
+    progressIntervalRef.current = setInterval(() => {
+      setProgress(prev => Math.min(prev + 2, 98)); // Non superare il 98%
+    }, 1000);
 
     try {
       await photoService.uploadPhoto(file);
-      setMessage('Foto caricata con successo! 🎉');
+      
+      // Completa la progress bar
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+      setProgress(100);
+      
+      // Nascondi la progress bar e mostra il messaggio dopo 1 secondo
+      setTimeout(() => {
+        setShowProgress(false);
+        setMessage('Foto caricata con successo!');
+      }, 1000);
+      
       // Reset del form
       event.target.value = '';
     } catch (error) {
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+      setShowProgress(false);
       setMessage('Errore durante il caricamento. Riprova.');
     } finally {
       setUploading(false);
@@ -81,13 +107,33 @@ const PhotoUpload: React.FC = () => {
           </Link>
         </div>
 
-        {message && (
+        {showProgress && (
+          <div className="mt-6 w-full max-w-md">
+            <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+              <div 
+                className="bg-gradient-to-r from-pink-400 to-purple-500 h-full transition-all duration-300 ease-out"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            <p className="text-center text-sm text-gray-600 mt-2">
+              Caricamento... {progress}%
+            </p>
+          </div>
+        )}
+
+        {message && !showProgress && (
           <div className={`mt-6 p-4 rounded-lg text-center font-medium ${
             message.includes('successo') 
               ? 'bg-green-100 text-green-800 border border-green-200' 
               : 'bg-red-100 text-red-800 border border-red-200'
           }`}>
-            {message}
+            {message.includes('successo') ? (
+              <span className="flex items-center justify-center gap-2">
+                {message} <FontAwesomeIcon icon={faCheckCircle} />
+              </span>
+            ) : (
+              message
+            )}
           </div>
         )}
       </div>
