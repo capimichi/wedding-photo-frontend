@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useServices } from '../servicesContext';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,7 +11,6 @@ const PhotoUpload: React.FC = () => {
   const [message, setMessage] = useState<string>('');
   const [progress, setProgress] = useState(0);
   const [showProgress, setShowProgress] = useState(false);
-  const progressIntervalRef = useRef<number | null>(null);
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -28,32 +27,22 @@ const PhotoUpload: React.FC = () => {
     setProgress(0);
     setShowProgress(true);
 
-    // Avvia la progress bar fake
-    progressIntervalRef.current = setInterval(() => {
-      setProgress(prev => Math.min(prev + 2, 98)); // Non superare il 98%
-    }, 1000);
-
     try {
-      await photoService.uploadPhoto(file);
+      await photoService.uploadPhoto(file, (progress) => {
+        setProgress(progress);
+      });
       
-      // Completa la progress bar
-      if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current);
-      }
-      setProgress(100);
-      
-      // Nascondi la progress bar e mostra il messaggio dopo 1 secondo
-      setTimeout(() => {
-        setShowProgress(false);
-        setMessage('Foto caricata con successo!');
-      }, 1000);
+      setMessage('Foto caricata con successo!');
       
       // Reset del form
       event.target.value = '';
+      
+      // Nascondi la progress bar dopo 2 secondi
+      setTimeout(() => {
+        setShowProgress(false);
+        setProgress(0);
+      }, 2000);
     } catch (error) {
-      if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current);
-      }
       setShowProgress(false);
       setMessage('Errore durante il caricamento. Riprova.');
     } finally {

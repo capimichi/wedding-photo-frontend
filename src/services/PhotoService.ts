@@ -1,8 +1,7 @@
 import BackendClient from '@/clients/BackendClient';
-import type AddPhotoRequest from '@/types/AddPhotoRequest';
+
 import type AddPhotoResponse from '@/types/AddPhotoResponse';
 import type GetPhotosResponse from '@/types/GetPhotosResponse';
-import { fileToBase64 } from '@/utils/fileUtils';
 
 
 export default class PhotoService {
@@ -12,17 +11,8 @@ export default class PhotoService {
     this.client = client;
   }
 
-  async uploadPhoto(file: File): Promise<AddPhotoResponse> {
-    // Convert file to base64
-    const base64Content = await fileToBase64(file);
-    
-    // Create payload
-    const payload: AddPhotoRequest = {
-      image_content: base64Content,
-      image_name: file.name
-    };
-
-    return this.client.uploadPhoto(payload);
+  async uploadPhoto(file: File, onProgress?: (progress: number) => void): Promise<AddPhotoResponse> {
+    return this.client.uploadPhoto(file, onProgress);
   }
 
   async getPhotos(page: number = 1, perPage: number = 10): Promise<GetPhotosResponse> {
