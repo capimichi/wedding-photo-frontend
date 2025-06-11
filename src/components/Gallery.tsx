@@ -88,7 +88,7 @@ const Gallery: React.FC = () => {
     );
   };
 
-  const handleImageError = (imageUrl: string, photoIndex: number, imageType: 'thumbnail' | 'preview') => {
+  const handleImageError = (photoIndex: number, imageType: 'thumbnail' | 'preview') => {
     const photo = photos[photoIndex];
     const failedKey = `${photoIndex}-${imageType}`;
     
@@ -156,7 +156,7 @@ const Gallery: React.FC = () => {
                     alt={photo.image_name}
                     className="w-full h-64 object-cover"
                     onError={(e) => {
-                      const fallbackUrl = handleImageError(e.currentTarget.src, index, 'thumbnail');
+                      const fallbackUrl = handleImageError(index, 'thumbnail');
                       e.currentTarget.src = fallbackUrl;
                     }}
                   />
@@ -219,7 +219,7 @@ const Gallery: React.FC = () => {
                 className="max-w-full max-h-full object-contain"
                 onClick={(e) => e.stopPropagation()}
                 onError={(e) => {
-                  const fallbackUrl = handleImageError(e.currentTarget.src, selectedPhotoIndex, 'preview');
+                  const fallbackUrl = handleImageError(selectedPhotoIndex, 'preview');
                   e.currentTarget.src = fallbackUrl;
                 }}
               />
