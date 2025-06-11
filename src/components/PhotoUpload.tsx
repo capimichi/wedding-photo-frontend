@@ -37,15 +37,15 @@ const PhotoUpload: React.FC = () => {
       // Reset del form
       event.target.value = '';
       
-      // Nascondi la progress bar dopo 2 secondi
+      // Nascondi la progress bar dopo 2 secondi e riabilita il bottone
       setTimeout(() => {
         setShowProgress(false);
         setProgress(0);
+        setUploading(false);
       }, 2000);
     } catch (error) {
       setShowProgress(false);
       setMessage('Errore durante il caricamento. Riprova.');
-    } finally {
       setUploading(false);
     }
   };
@@ -81,7 +81,7 @@ const PhotoUpload: React.FC = () => {
               type="button" 
               disabled={uploading}
               onClick={() => document.getElementById('photo-input')?.click()}
-              className="bg-gradient-to-r from-pink-400 to-purple-500 hover:from-pink-500 hover:to-purple-600 disabled:from-gray-300 disabled:to-gray-400 text-white font-semibold py-4 px-8 rounded-full text-lg shadow-lg hover:shadow-xl transition-all duration-300 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2"
+              className="bg-pink-500 bg-gradient-to-r from-pink-400 to-purple-500 hover:bg-pink-600 hover:from-pink-500 hover:to-purple-600 disabled:bg-gray-400 disabled:from-gray-300 disabled:to-gray-400 text-white font-semibold py-4 px-8 rounded-full text-lg shadow-lg hover:shadow-xl transition-all duration-300 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2"
             >
               <FontAwesomeIcon icon={faCamera} />
               {uploading ? 'Caricamento...' : 'Carica'}
