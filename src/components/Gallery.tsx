@@ -14,6 +14,7 @@ const Gallery: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isComplete, setIsComplete] = useState(false);
+  const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
 
   const fetchPhotos = useCallback(async (page: number, append: boolean = false) => {
     try {
@@ -87,6 +88,20 @@ const Gallery: React.FC = () => {
     );
   };
 
+  const handleImageError = (imageUrl: string, photoIndex: number, imageType: 'thumbnail' | 'preview') => {
+    const photo = photos[photoIndex];
+    const failedKey = `${photoIndex}-${imageType}`;
+    
+    if (!failedImages.has(failedKey)) {
+      // First failure, try main image
+      setFailedImages(prev => new Set(prev).add(failedKey));
+      return photo.image_url;
+    } else {
+      // Second failure, use placeholder
+      return 'https://placehold.co/400x400?text=Anteprima+non+disponibile';
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-pink-50 to-blue-50 p-8">
       <div className="w-full max-w-6xl">
@@ -137,11 +152,12 @@ const Gallery: React.FC = () => {
                   onClick={() => openLightbox(index)}
                 >
                   <img
-                    src={photo.thumbnail_url}
+                    src={failedImages.has(`${index}-thumbnail`) ? photo.image_url : photo.thumbnail_url}
                     alt={photo.image_name}
                     className="w-full h-64 object-cover"
                     onError={(e) => {
-                      e.currentTarget.src = 'https://placehold.co/400x400?text=Anteprima+non+disponibile';
+                      const fallbackUrl = handleImageError(e.currentTarget.src, index, 'thumbnail');
+                      e.currentTarget.src = fallbackUrl;
                     }}
                   />
                 </div>
@@ -198,10 +214,14 @@ const Gallery: React.FC = () => {
 
               {/* Photo */}
               <img
-                src={photos[selectedPhotoIndex].preview_url}
+                src={failedImages.has(`${selectedPhotoIndex}-preview`) ? photos[selectedPhotoIndex].image_url : photos[selectedPhotoIndex].preview_url}
                 alt={photos[selectedPhotoIndex].image_name}
                 className="max-w-full max-h-full object-contain"
                 onClick={(e) => e.stopPropagation()}
+                onError={(e) => {
+                  const fallbackUrl = handleImageError(e.currentTarget.src, selectedPhotoIndex, 'preview');
+                  e.currentTarget.src = fallbackUrl;
+                }}
               />
 
               {/* Photo counter */}
