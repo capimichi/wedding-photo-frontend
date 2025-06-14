@@ -45,7 +45,20 @@ const PhotoUpload: React.FC = () => {
       }, 2000);
     } catch (error) {
       setShowProgress(false);
-      setMessage('Errore durante il caricamento. Riprova.');
+      
+      // Mostra un messaggio di errore più specifico
+      let errorMessage = 'Errore durante il caricamento. Riprova.';
+      
+      // check if error is string
+      if (error instanceof Error) {
+        errorMessage = error.message.charAt(0).toUpperCase() + error.message.slice(1);
+      } else if (typeof error === 'string') {
+        errorMessage = error.charAt(0).toUpperCase() + error.slice(1);
+      } else if (error && typeof error === 'object' && 'message' in error) {
+        errorMessage = (error as { message: string }).message.charAt(0).toUpperCase() + (error as { message: string }).message.slice(1);
+      }
+      
+      setMessage(errorMessage);
       setUploading(false);
     }
   };

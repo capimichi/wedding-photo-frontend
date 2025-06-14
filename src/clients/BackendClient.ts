@@ -33,10 +33,20 @@ export default class BackendClient {
             const response = JSON.parse(xhr.responseText);
             resolve(response);
           } catch (error) {
+            console.log(error);
             reject(new Error('Errore durante il parsing della risposta'));
           }
         } else {
-          reject(new Error('Errore durante il caricamento della foto'));
+          let errorMessage = 'Errore durante il caricamento della foto';
+          try {
+            const errorResponse = JSON.parse(xhr.responseText);
+            if (errorResponse && errorResponse.message) {
+              errorMessage = errorResponse.message;
+            }
+          } catch (error) {
+            console.log(error);
+          }
+          reject(new Error(errorMessage));
         }
       });
 
