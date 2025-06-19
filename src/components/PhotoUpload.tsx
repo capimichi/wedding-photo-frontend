@@ -113,7 +113,7 @@ const PhotoUpload: React.FC = () => {
           <div className="mt-6 w-full max-w-md">
             <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
               <div 
-                className="bg-gradient-to-r from-pink-400 to-purple-500 h-full transition-all duration-300 ease-out"
+                className="bg-pink-500 bg-gradient-to-r from-pink-400 to-purple-500 h-full transition-all duration-300 ease-out"
                 style={{ width: `${progress}%` }}
               />
             </div>
